@@ -10,6 +10,7 @@ async def on_ready():
     print(client.user.name)
     print(client.user.id)
     print('------') # To show that the bot can log in
+    await client.change_presence(game=discord.Game(name = '!game help'))
 
 @client.event
 async def on_message(message):
@@ -51,4 +52,3 @@ async def on_message(message):
 
 
 client.run('TOKEN')
-client.change_status("Type !game help for instructions!")
