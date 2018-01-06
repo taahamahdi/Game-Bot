@@ -25,13 +25,24 @@ async def on_message(message):
     elif message.content.startswith('!game'): #When !game is entered in chat
         gameName = message.content[6:]
         noSpaceName = gameName.replace(" ", "+")
-        if gameName == "csgo": # To bypass API shortcomings for popular games
+        if gameName.lower() == "csgo" or gameName.lower() == "cs" or gameName.lower() == "cs:go": # To bypass API shortcomings for popular games
 
-        	await client.send_message(message.channel, "http://store.steampowered.com/app/730") 
+            await client.send_message(message.channel, "Looking for " + gameName.upper() + "...")
+            await client.send_message(message.channel, "http://store.steampowered.com/app/730") 
 
-        elif gameName == "pubg":
+        elif gameName.lower() == "pubg":
 
-        	await client.send_message(message.channel, "http://store.steampowered.com/app/578080")
+            await client.send_message(message.channel, "Looking for " + gameName.upper() + "...")
+            await client.send_message(message.channel, "http://store.steampowered.com/app/578080")
+
+        elif gameName.lower() == "n++":
+            await client.send_message(message.channel, "Looking for " + gameName.upper() + "...")
+            await client.send_message(message.channel, "http://store.steampowered.com/app/230270")
+
+        elif gameName.lower() == "gta" or gameName.lower() == "gta5" or gameName.lower() == "gtav":
+
+            await client.send_message(message.channel, "Looking for " + gameName.upper() + "...")
+            await client.send_message(message.channel, "http://store.steampowered.com/app/271590")
 
         elif len(gameName) > 0:
 
@@ -44,9 +55,13 @@ async def on_message(message):
         	data.close()
         	gameIDLocation = str(html[50:60])
         	gameID = ''.join(filter(lambda x: x.isdigit(), list(gameIDLocation)))
+
         	if len(gameID) == 0:
+
         		await client.send_message(message.channel, "Try again with more characters or a different game!")
+
         	else:
+
         		await client.send_message(message.channel, "http://store.steampowered.com/app/" + gameID)
 
         else:
