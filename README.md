@@ -8,4 +8,10 @@ Discord.py:
 ```
 python3 -m pip install -U discord.py
 ```
+
+asyncio:
+```
+pip install asyncio
+```
+
 **Make sure you are running Python 3.4.2+!**
