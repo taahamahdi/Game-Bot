@@ -25,7 +25,8 @@ async def on_message(message):
     elif message.content.startswith('!game'): #When !game is entered in chat
         gameName = message.content[6:]
         noSpaceName = gameName.replace(" ", "+")
-        if gameName.lower() == "csgo" or gameName.lower() == "cs" or gameName.lower() == "cs:go": # To bypass API shortcomings for popular games
+        if gameName.lower() == "csgo" or gameName.lower() == "cs" or gameName.lower() == "cs:go": 
+            # To bypass API shortcomings for popular games
 
             await client.send_message(message.channel, "Looking for " + gameName.upper() + "...")
             await client.send_message(message.channel, "http://store.steampowered.com/app/730") 
@@ -36,6 +37,7 @@ async def on_message(message):
             await client.send_message(message.channel, "http://store.steampowered.com/app/578080")
 
         elif gameName.lower() == "n++":
+            
             await client.send_message(message.channel, "Looking for " + gameName.upper() + "...")
             await client.send_message(message.channel, "http://store.steampowered.com/app/230270")
 
