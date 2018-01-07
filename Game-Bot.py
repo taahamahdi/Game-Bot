@@ -20,7 +20,19 @@ async def on_ready():
 async def on_message(message):
     if message.content.startswith('!game help'):
 
-        await client.send_message(message.channel, 'Simply type !game followed by the game you wished to be linked to on Steam!')
+        await client.send_message(message.channel, "Simply type !game followed by the game you wished to be linked to on Steam!")
+        await client.send_message(message.channel, "Use !game bugs to get a link to a Discord server where you can report bugs.")
+        await client.send_message(message.channel, "Use !game donate to get BTC/ETH addresses to help pay server hosting fees.")
+
+    elif message.content.startswith('!game bugs'):
+
+        await client.send_message(message.channel, "Please join https://discord.gg/AZTP5fK with all your bugs (and to talk with me, Cool :])")
+
+    elif message.content.startswith('!game donate'):
+
+        await client.send_message(message.channel, "All money goes directly to server hosting and bot development, not to me or anyone else.")
+        await client.send_message(message.channel, "ETH: 0x8E48AD118491C571a5E22E990cea4A9d099cDEDc")
+        await client.send_message(message.channel, "Other forms of donations coming soon!")
 
     elif message.content.startswith('!game'): #When !game is entered in chat
         gameName = message.content[6:]
@@ -37,7 +49,7 @@ async def on_message(message):
             await client.send_message(message.channel, "http://store.steampowered.com/app/578080")
 
         elif gameName.lower() == "n++":
-            
+
             await client.send_message(message.channel, "Looking for " + gameName.upper() + "...")
             await client.send_message(message.channel, "http://store.steampowered.com/app/230270")
 
