@@ -15,3 +15,7 @@ pip install asyncio
 ```
 
 **Make sure you are running Python 3.4.2+!**
+
+## To do:
+
+Remove "Looking for x" string output, and set up "Game not found" instead.
