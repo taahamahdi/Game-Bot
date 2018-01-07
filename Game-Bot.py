@@ -40,48 +40,47 @@ async def on_message(message):
         if gameName.lower() == "csgo" or gameName.lower() == "cs" or gameName.lower() == "cs:go": 
             # To bypass API shortcomings for popular games
 
-            await client.send_message(message.channel, "Looking for " + gameName.upper() + "...")
             await client.send_message(message.channel, "http://store.steampowered.com/app/730") 
 
         elif gameName.lower() == "pubg":
-
-            await client.send_message(message.channel, "Looking for " + gameName.upper() + "...")
+            
             await client.send_message(message.channel, "http://store.steampowered.com/app/578080")
 
         elif gameName.lower() == "n++":
 
-            await client.send_message(message.channel, "Looking for " + gameName.upper() + "...")
             await client.send_message(message.channel, "http://store.steampowered.com/app/230270")
 
-        elif gameName.lower() == "gta" or gameName.lower() == "gta5" or gameName.lower() == "gtav":
+        elif gameName.lower() == "gta" or gameName.lower() == "gta5" or gameName.lower() == "gtav" \
+          or gameName.lower() == "gta 5" or gameName.lower() == "gta v":
 
-            await client.send_message(message.channel, "Looking for " + gameName.upper() + "...")
             await client.send_message(message.channel, "http://store.steampowered.com/app/271590")
 
         elif len(gameName) > 0:
 
-        	await client.send_message(message.channel, "Looking for " + gameName.title() + "...")
+            urllink = "http://store.steampowered.com/search/suggest?term=" + noSpaceName + "&f=games"
 
-        	urllink = "http://store.steampowered.com/search/suggest?term=" + noSpaceName + "&f=games"
-        	#print(urllink)
-        	data = urllib.request.urlopen(urllink)
-        	html = data.read()
-        	data.close()
-        	gameIDLocation = str(html[50:60])
-        	gameID = ''.join(filter(lambda x: x.isdigit(), list(gameIDLocation)))
+            try:
+                data = urllib.request.urlopen(urllink)
+                html = data.read()
+                data.close()
+                gameIDLocation = str(html[50:60])
+                gameID = ''.join(filter(lambda x: x.isdigit(), list(gameIDLocation)))
+                # print(len(gameID))
 
-        	if len(gameID) == 0:
+                if len(gameID) == 0:
 
-        		await client.send_message(message.channel, "Try again with more characters or a different game!")
+                    await client.send_message(message.channel, "Try again with more characters or a different game!")
 
-        	else:
+                else:
 
-        		await client.send_message(message.channel, "http://store.steampowered.com/app/" + gameID)
+                    await client.send_message(message.channel, "http://store.steampowered.com/app/" + gameID)
+
+            except ValueError:
+                await client.send_message(message.channel, "Game not found :(")
 
         else:
 
         	await client.send_message(message.channel, "Please enter your search term!")
-
 
 
 client.run('TOKEN')
