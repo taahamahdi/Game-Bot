@@ -1,4 +1,6 @@
 import discord
+import logging
+import os
 import re
 import urllib.request
 import urllib.parse
@@ -11,7 +13,14 @@ from lxml import html
 
 base_url = "http://store.steampowered.com/search/suggest"
 appid_regex = re.compile("steam/apps/([0-9]+)/")
+
 client = discord.Client() # Creating bot instance
+
+logger = logging.getLogger('game_bot')
+logger.setLevel(logging.DEBUG)
+handler = logging.FileHandler(filename='game_bot.log', encoding='utf-8', mode='a')
+handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger.addHandler(handler)
 
 
 def game_search(name):
@@ -20,17 +29,20 @@ def game_search(name):
     Returns None if no results were found;
     otherwise returns the appid as a string
     """
+    logger.info("Searching for %s" % name)
     data = urllib.parse.urlencode({'term': name, 'f': 'games'})
     data = data.encode('utf-8')
     with urllib.request.urlopen(base_url, data) as f:
         resp = f.read()
 
     if not resp:
+        logger.info("Received empty response for %s" % name)
         return None
 
     tree = html.fromstring(resp)
     img_url = tree.xpath('//img[position() = 1]')[0].get("src")
     app_id = appid_regex.search(img_url)[1]
+    logger.debug("Returning appid %s" % app_id)
     return app_id
 
 
@@ -89,12 +101,15 @@ async def on_message(message):
                     await client.send_message(message.channel, "Try again with more characters or a different game!")
 
             except urllib.error.HTTPError as e:
+                code = e.code
+                logger.error("Got HTTPError %s" % code)
                 await client.send_message(
-                    message.channel, "Error {} returned :(".format(e)
+                    message.channel, "Error {} returned :(".format(code)
                 )
             except Exception as e:
+                logger.exception("Exception in game searching")
                 await client.send_message(
-                    message.channel, "Exception: {} :(".format(type(e))
+                    message.channel, "Exception :("
                 )
 
         else:
@@ -102,4 +117,8 @@ async def on_message(message):
 
 
 if __name__ == "__main__":
-    client.run('TOKEN')
+    token = os.environ.get("GAME_BOT_TOKEN")
+    if not token:
+        print("Set GAME_BOT_TOKEN as an env var with your token")
+    else:
+        client.run(token)
