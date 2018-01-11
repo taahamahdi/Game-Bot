@@ -1,5 +1,4 @@
 import discord
-import asyncio
 import urllib.request
 
 # Game-Bot.py contains some functions based on Rapptz's Discord.py's bot examples
