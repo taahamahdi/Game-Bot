@@ -1,11 +1,38 @@
 import discord
+import re
 import urllib.request
+import urllib.parse
+
+from lxml import html
 
 # Game-Bot.py contains some functions based on Rapptz's Discord.py's bot examples
 #
 #                    https://github.com/Rapptz/discord.py
 
+base_url = "http://store.steampowered.com/search/suggest"
+appid_regex = re.compile("steam/apps/([0-9]+)/")
 client = discord.Client() # Creating bot instance
+
+
+def game_search(name):
+    """Search for a game with the given name.
+
+    Returns None if no results were found;
+    otherwise returns the appid as a string
+    """
+    data = urllib.parse.urlencode({'term': name, 'f': 'games'})
+    data = data.encode('utf-8')
+    with urllib.request.urlopen(base_url, data) as f:
+        resp = f.read()
+
+    if not resp:
+        return None
+
+    tree = html.fromstring(resp)
+    img_url = tree.xpath('//img[position() = 1]')[0].get("src")
+    app_id = appid_regex.search(img_url)[1]
+    return app_id
+
 
 @client.event
 async def on_ready():
@@ -34,52 +61,45 @@ async def on_message(message):
         await client.send_message(message.channel, "Other forms of donations coming soon!")
 
     elif message.content.startswith('!game'): #When !game is entered in chat
-        gameName = message.content[6:]
-        noSpaceName = gameName.replace(" ", "+")
-        if gameName.lower() == "csgo" or gameName.lower() == "cs" or gameName.lower() == "cs:go": 
+        game_name = message.content[6:]
+        if game_name.lower() == "csgo" or game_name.lower() == "cs" or game_name.lower() == "cs:go":
             # To bypass API shortcomings for popular games
 
-            await client.send_message(message.channel, "http://store.steampowered.com/app/730") 
+            await client.send_message(message.channel, "http://store.steampowered.com/app/730")
 
-        elif gameName.lower() == "pubg":
-            
+        elif game_name.lower() == "pubg":
+
             await client.send_message(message.channel, "http://store.steampowered.com/app/578080")
 
-        elif gameName.lower() == "n++":
+        elif game_name.lower() == "n++":
 
             await client.send_message(message.channel, "http://store.steampowered.com/app/230270")
 
-        elif gameName.lower() == "gta" or gameName.lower() == "gta5" or gameName.lower() == "gtav" \
-          or gameName.lower() == "gta 5" or gameName.lower() == "gta v":
+        elif game_name.lower() == "gta" or game_name.lower() == "gta5" or game_name.lower() == "gtav" \
+          or game_name.lower() == "gta 5" or game_name.lower() == "gta v":
 
             await client.send_message(message.channel, "http://store.steampowered.com/app/271590")
 
-        elif len(gameName) > 0:
-
-            urllink = "http://store.steampowered.com/search/suggest?term=" + noSpaceName + "&f=games"
-
+        elif len(game_name) > 0:
             try:
-                data = urllib.request.urlopen(urllink)
-                html = data.read()
-                data.close()
-                gameIDLocation = str(html[50:60])
-                gameID = ''.join(filter(lambda x: x.isdigit(), list(gameIDLocation)))
-                # print(len(gameID))
-
-                if len(gameID) == 0:
-
+                app_id = game_search(game_name)
+                if app_id:
+                    await client.send_message(message.channel, "http://store.steampowered.com/app/" + app_id)
+                else:
                     await client.send_message(message.channel, "Try again with more characters or a different game!")
 
-                else:
-
-                    await client.send_message(message.channel, "http://store.steampowered.com/app/" + gameID)
-
-            except ValueError:
-                await client.send_message(message.channel, "Game not found :(")
+            except urllib.error.HTTPError as e:
+                await client.send_message(
+                    message.channel, "Error {} returned :(".format(e)
+                )
+            except Exception as e:
+                await client.send_message(
+                    message.channel, "Exception: {} :(".format(type(e))
+                )
 
         else:
+            await client.send_message(message.channel, "Please enter your search term!")
 
-        	await client.send_message(message.channel, "Please enter your search term!")
 
-
-client.run('TOKEN')
+if __name__ == "__main__":
+    client.run('TOKEN')
