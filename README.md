@@ -24,4 +24,6 @@ showing up in your history.
 
 ## To do:
 
+Add server counter for DiscordBots.org
+
 <del>Remove "Looking for x" string output, and set up "Game not found" instead.</del>
