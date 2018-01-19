@@ -24,6 +24,10 @@ showing up in your history.
 
 ## To do:
 
-Add server counter for DiscordBots.org
+* Add server counter for DiscordBots.org
 
-<del>Remove "Looking for x" string output, and set up "Game not found" instead.</del>
+* Redirect "TF2" to Team Fortress 2
+
+* Change "Try again with more characters or a different game!" to "Try again with less characters or a different game!"
+
+* <del>Remove "Looking for x" string output, and set up "Game not found" instead.</del>
