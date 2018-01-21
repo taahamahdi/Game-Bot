@@ -61,9 +61,9 @@ async def on_server_join(server):
 async def on_server_remove(server):
     payload = {"server_count": len(client.servers)}
     await dbl_post(payload, client.user.id)
-#
+
 # end of Hugop's code
-#
+
 
 
 @client.event
@@ -189,7 +189,10 @@ async def help(ctx):
 
          "Use **!game donate** for an ETH address to "
          "help pay server hosting fees.\n\n"
-         "Use **!game info** to find out more about how the bot works!")
+         "Use **!game info** to find out more about how the bot works!\n\n"
+        
+         "Add a backslash to find a game that starts with \"bugs,\""
+         " \"donate,\" or \"info.\"")
         )
 
 
