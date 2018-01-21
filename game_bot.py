@@ -35,45 +35,47 @@ handler.setFormatter(logging.Formatter(
 logger.addHandler(handler)
 
 
-#
 # This code is from Hugop#2950 on the "Discord Bot List" server
-# This code provides provides the number of servers Game-Bot is running on for
-# DiscordBots.org's API.
-#
-# Some of this code has already been merged in with:
-# * on_ready()
-#
-dbltoken = "TOKEN"
-# Replace "TOKEN" with your DiscordBots.org API token
-
-url = "https://discordbots.org/api/bots/" + client.bot.id + "/stats"
-headers = {"Authorization": dbltoken}
-
-# This was merged into the existing on_ready() function
-# async def on_ready():
-#     payload = {"server_count"  : len(bot.servers)}
-#     async with aiohttp.ClientSession() as aioclient:
-#             await aioclient.post(url, data=payload, headers=headers)
+# This code provides provides the number of servers Game-Bot is
+# running on for DiscordBots.org's API.
+dbltoken = None
+# Replace with your DiscordBots.org API token
 
 
-#
+async def dbl_post(payload, bot_id):
+    if dbltoken:
+        url = "https://discordbots.org/api/bots/" + bot_id + "/stats"
+        headers = {"Authorization": dbltoken}
+        async with aiohttp.ClientSession() as aioclient:
+                await aioclient.post(url, data=payload, headers=headers)
+
+
 # on_server_join(server) and on_server_remove(server) keep a count of
 # how many servers Game-Bot is on.
-#
-
 async def on_server_join(server):
     payload = {"server_count": len(client.servers)}
-    async with aiohttp.ClientSession() as aioclient:
-            await aioclient.post(url, data=payload, headers=headers)
+    await dbl_post(payload, client.user.id)
 
 
 async def on_server_remove(server):
     payload = {"server_count": len(client.servers)}
-    async with aiohttp.ClientSession() as aioclient:
-            await aioclient.post(url, data=payload, headers=headers)
+    await dbl_post(payload, client.user.id)
 #
 # end of Hugop's code
 #
+
+
+@client.event
+async def on_ready():
+    print('Logged in as:')
+    print(client.user.name)
+    print(client.user.id)
+    print('------')  # To show that the bot can log in
+    await client.change_presence(game=discord.Game(name='!game help'))
+
+    payload = {"server_count": len(client.servers)}
+
+    await dbl_post(payload, client.user.id)
 
 
 def game_search(name):
@@ -94,24 +96,9 @@ def game_search(name):
 
     tree = html.fromstring(resp)
     img_url = tree.xpath('//img[position() = 1]')[0].get("src")
-    app_id = appid_regex.search(img_url)[1]
+    app_id = appid_regex.search(img_url).group(1)
     logger.debug("Returning appid %s" % app_id)
     return app_id
-
-
-@client.event
-async def on_ready():
-    print('Logged in as:')
-    print(client.user.name)
-    print(client.user.id)
-    print('------')  # To show that the bot can log in
-    await client.change_presence(game=discord.Game(name='!game help'))
-
-    # Code from Hugop (see above)
-    payload = {"server_count": len(client.servers)}
-    async with aiohttp.ClientSession() as aioclient:
-        await aioclient.post(url, data=payload, headers=headers)
-    # End of Hugop's code
 
 
 @client.event
