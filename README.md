@@ -26,6 +26,8 @@ showing up in your history.
 
 ## To do:
 
+* When a game isn't found, react to the user's message with a crying emoji.
+
 * <del>Add server counter for DiscordBots.org</del>
 
 * <del>Redirect "TF2" to Team Fortress 2</del>
