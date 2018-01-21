@@ -116,7 +116,7 @@ async def on_ready():
 
 
 #creating game command group
-@client.group
+@client.group(pass_context=True)
 async def game(ctx):
     if ctx.invoked_subcommand is None:
         game_name = ctx.content[6:]
