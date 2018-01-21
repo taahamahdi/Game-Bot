@@ -6,6 +6,7 @@ import urllib.request
 import urllib.parse
 import aiohttp
 
+from discord.ext.commands import Bot
 from lxml import html
 
 
@@ -22,7 +23,7 @@ from lxml import html
 base_url = "http://store.steampowered.com/search/suggest"
 appid_regex = re.compile("steam/apps/([0-9]+)/")
 
-client = discord.Client()  # Creating bot instance
+client = Bot(command_prefix='!')  # Creating bot instance
 
 logger = logging.getLogger('game_bot')
 logger.setLevel(logging.DEBUG)
