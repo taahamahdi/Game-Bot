@@ -4,23 +4,76 @@ import os
 import re
 import urllib.request
 import urllib.parse
+import aiohttp
 
 from lxml import html
 
-# Game-Bot.py contains some functions based on Rapptz's Discord.py's bot examples
+
 #
-#                    https://github.com/Rapptz/discord.py
+# Game-Bot.py contains some functions based
+#   on Rapptz's Discord.py's bot examples
+#
+#   https://github.com/Rapptz/discord.py
+#
+
+# os.environ["GAME_BOT_TOKEN"] = "TOKEN"
+# [Optional] Set your Bot token directly through the code
 
 base_url = "http://store.steampowered.com/search/suggest"
 appid_regex = re.compile("steam/apps/([0-9]+)/")
 
-client = discord.Client() # Creating bot instance
+client = discord.Client()  # Creating bot instance
 
 logger = logging.getLogger('game_bot')
 logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='game_bot.log', encoding='utf-8', mode='a')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+handler = logging.FileHandler(
+    filename='game_bot.log',
+    encoding='utf-8',
+    mode='a')
+handler.setFormatter(logging.Formatter(
+    '%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
+
+
+#
+# This code is from Hugop#2950 on the "Discord Bot List" server
+# This code provides provides the number of servers Game-Bot is running on for
+# DiscordBots.org's API.
+#
+# Some of this code has already been merged in with:
+# * on_ready()
+#
+dbltoken = "TOKEN"
+# Replace "TOKEN" with your DiscordBots.org API token
+
+url = "https://discordbots.org/api/bots/" + client.bot.id + "/stats"
+headers = {"Authorization": dbltoken}
+
+# This was merged into the existing on_ready() function
+# async def on_ready():
+#     payload = {"server_count"  : len(bot.servers)}
+#     async with aiohttp.ClientSession() as aioclient:
+#             await aioclient.post(url, data=payload, headers=headers)
+
+
+#
+# on_server_join(server) and on_server_remove(server) keep a count of
+# how many servers Game-Bot is on.
+#
+
+async def on_server_join(server):
+    payload = {"server_count": len(client.servers)}
+    async with aiohttp.ClientSession() as aioclient:
+            await aioclient.post(url, data=payload, headers=headers)
+
+
+async def on_server_remove(server):
+    payload = {"server_count": len(client.servers)}
+    async with aiohttp.ClientSession() as aioclient:
+            await aioclient.post(url, data=payload, headers=headers)
+#
+# end of Hugop's code
+#
 
 
 def game_search(name):
@@ -51,54 +104,123 @@ async def on_ready():
     print('Logged in as:')
     print(client.user.name)
     print(client.user.id)
-    print('------') # To show that the bot can log in
-    await client.change_presence(game=discord.Game(name = '!game help'))
+    print('------')  # To show that the bot can log in
+    await client.change_presence(game=discord.Game(name='!game help'))
+
+    # Code from Hugop (see above)
+    payload = {"server_count": len(client.servers)}
+    async with aiohttp.ClientSession() as aioclient:
+        await aioclient.post(url, data=payload, headers=headers)
+    # End of Hugop's code
+
 
 @client.event
 async def on_message(message):
     if message.content.startswith('!game help'):
 
-        await client.send_message(message.channel, "Simply type !game followed by the game you wished to be linked to on Steam!")
-        await client.send_message(message.channel, "Use !game bugs to get a link to a Discord server where you can report bugs.")
-        await client.send_message(message.channel, "Use !game donate to get BTC/ETH addresses to help pay server hosting fees.")
+        await client.send_message(
+            message.channel,
+            ("Simply type **!game followed by the game "
+             "you wished to be linked to** on Steam!\n\n"
+
+             "Use **!game bugs** to get a link to a Discord server "
+             "where you can report bugs.\n\n"
+
+             "Use **!game donate** for an ETH address to "
+             "help pay server hosting fees.\n\n"
+             "Use **!game info** to find out more about how the bot works!")
+            )
 
     elif message.content.startswith('!game bugs'):
 
-        await client.send_message(message.channel, "Please join https://discord.gg/AZTP5fK with all your bugs (and to talk with me, Cool :])")
+        await client.send_message(
+            message.channel,
+            ("Please join https://discord.gg/AZTP5fK with all "
+             "your bugs (and to talk with me, Cool :])")
+            )
 
     elif message.content.startswith('!game donate'):
 
-        await client.send_message(message.channel, "All money goes directly to server hosting and bot development, not to me or anyone else.")
-        await client.send_message(message.channel, "ETH: 0x8E48AD118491C571a5E22E990cea4A9d099cDEDc")
-        await client.send_message(message.channel, "Other forms of donations coming soon!")
+        await client.send_message(
+            message.channel,
+            ("All money goes directly to server hosting and bot development, "
+             "not to me (or anyone else).")
+            )
+        await client.send_message(
+            message.channel,
+            "ETH: **0x8E48AD118491C571a5E22E990cea4A9d099cDEDc**")
+        await client.send_message(
+            message.channel,
+            "Other forms of donations coming soon!")
 
-    elif message.content.startswith('!game'): #When !game is entered in chat
+    elif message.content.startswith('!game info'):
+
+        await client.send_message(
+            message.channel,
+            ("Game-Bot is written in Python, using Discord.py as an API "
+             "wrapper for Discord. "
+             "The bot was coded by <@156971607057760256>, a student at the "
+             "University of Waterloo in Canada.")
+            )
+
+        await client.send_message(
+            message.channel,
+            ("You can take a look at the code at:\n"
+             "https://github.com/taahamahdi/Game-Bot")
+            )
+
+    elif message.content.startswith('!game'):  # When !game is entered in chat
         game_name = message.content[6:]
-        if game_name.lower() == "csgo" or game_name.lower() == "cs" or game_name.lower() == "cs:go":
+        if game_name.lower() == "csgo" \
+            or game_name.lower() == "cs" \
+                or game_name.lower() == "cs:go":
             # To bypass API shortcomings for popular games
 
-            await client.send_message(message.channel, "http://store.steampowered.com/app/730")
+            await client.send_message(
+                message.channel,
+                "http://store.steampowered.com/app/730")
 
         elif game_name.lower() == "pubg":
 
-            await client.send_message(message.channel, "http://store.steampowered.com/app/578080")
+            await client.send_message(
+                message.channel,
+                "http://store.steampowered.com/app/578080")
 
         elif game_name.lower() == "n++":
 
-            await client.send_message(message.channel, "http://store.steampowered.com/app/230270")
+            await client.send_message(
+                message.channel,
+                "http://store.steampowered.com/app/230270")
 
-        elif game_name.lower() == "gta" or game_name.lower() == "gta5" or game_name.lower() == "gtav" \
-          or game_name.lower() == "gta 5" or game_name.lower() == "gta v":
+        elif game_name.lower() == "gta"     \
+            or game_name.lower() == "gta5"  \
+            or game_name.lower() == "gtav"  \
+            or game_name.lower() == "gta 5" \
+                or game_name.lower() == "gta v":
 
-            await client.send_message(message.channel, "http://store.steampowered.com/app/271590")
+            await client.send_message(
+                message.channel,
+                "http://store.steampowered.com/app/271590")
+
+        elif game_name.lower() == "tf2":
+
+            await client.send_message(
+                message.channel,
+                "http://store.steampowered.com/app/440")
 
         elif len(game_name) > 0:
             try:
                 app_id = game_search(game_name)
                 if app_id:
-                    await client.send_message(message.channel, "http://store.steampowered.com/app/" + app_id)
+                    await client.send_message(
+                        message.channel,
+                        "http://store.steampowered.com/app/" + app_id)
                 else:
-                    await client.send_message(message.channel, "Try again with more characters or a different game!")
+                    await client.send_message(
+                        message.channel,
+                        ("Please try again with less characters, "
+                         "the game's full name, or with a different game.")
+                        )
 
             except urllib.error.HTTPError as e:
                 code = e.code
@@ -113,7 +235,9 @@ async def on_message(message):
                 )
 
         else:
-            await client.send_message(message.channel, "Please enter your search term!")
+            await client.send_message(
+                message.channel,
+                "Please enter your search term!")
 
 
 if __name__ == "__main__":
