@@ -189,10 +189,10 @@ async def game(ctx):
                 "Please enter your search term!")
 
 #help subcommand, describes usage for !game
-@game.command()
-async def help():
+@game.command(pass_context=True)
+async def help(ctx):
     await client.send_message(
-        message.channel,
+        ctx.message.channel,
         ("Simply type **!game followed by the game "
          "you wished to be linked to** on Steam!\n\n"
 
@@ -206,10 +206,10 @@ async def help():
 
 
 #info subcommand, gives info about bot creator
-@game.command()
-async def info():
+@game.command(pass_context=True)
+async def info(ctx):
     await client.send_message(
-        message.channel,
+        ctx.message.channel,
         ("Game-Bot is written in Python, using Discord.py as an API "
          "wrapper for Discord. "
          "The bot was coded by <@156971607057760256>, a student at the "
@@ -224,20 +224,20 @@ async def info():
 
 
 #bugs subcommand, links server for bug reports
-@game.command()
-async def bugs():
+@game.command(pass_context=True)
+async def bugs(ctx):
     await client.send_message(
-        message.channel,
+        ctx.message.channel,
         ("Please join https://discord.gg/AZTP5fK with all "
          "your bugs (and to talk with me, Cool :])")
         )
 
 
 #donate subcommand, gives donation link
-@game.command()
-async def donate():
+@game.command(pass_context=True)
+async def donate(ctx):
     await client.send_message(
-        message.channel,
+        ctx.message.channel,
         ("All money goes directly to server hosting and bot development, "
           "not to me (or anyone else).")
         )
