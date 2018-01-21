@@ -112,19 +112,19 @@ async def game(ctx):
             # To bypass API shortcomings for popular games
 
             await client.send_message(
-                message.channel,
+                ctx.message.channel,
                 "http://store.steampowered.com/app/730")
 
         elif game_name.lower() == "pubg":
 
             await client.send_message(
-                message.channel,
+                ctx.message.channel,
                 "http://store.steampowered.com/app/578080")
 
         elif game_name.lower() == "n++":
 
             await client.send_message(
-                message.channel,
+                ctx.message.channel,
                 "http://store.steampowered.com/app/230270")
 
         elif game_name.lower() == "gta"     \
@@ -134,13 +134,13 @@ async def game(ctx):
                 or game_name.lower() == "gta v":
 
             await client.send_message(
-                message.channel,
+                ctx.message.channel,
                 "http://store.steampowered.com/app/271590")
 
         elif game_name.lower() == "tf2":
 
             await client.send_message(
-                message.channel,
+                ctx.message.channel,
                 "http://store.steampowered.com/app/440")
 
         elif len(game_name) > 0:
@@ -148,11 +148,11 @@ async def game(ctx):
                 app_id = game_search(game_name)
                 if app_id:
                     await client.send_message(
-                        message.channel,
+                        ctx.message.channel,
                         "http://store.steampowered.com/app/" + app_id)
                 else:
                     await client.send_message(
-                        message.channel,
+                        ctx.message.channel,
                         ("Please try again with less characters, "
                          "the game's full name, or with a different game.")
                         )
@@ -161,24 +161,24 @@ async def game(ctx):
                 code = e.code
                 logger.error("Got HTTPError %s" % code)
                 await client.send_message(
-                    message.channel, "Error {} returned :(".format(code)
+                    ctx.message.channel, "Error {} returned :(".format(code)
                 )
             except Exception as e:
                 logger.exception("Exception in game searching")
                 await client.send_message(
-                    message.channel, "Exception :("
+                    ctx.message.channel, "Exception :("
                 )
 
         else:
             await client.send_message(
-                message.channel,
+                ctx.message.channel,
                 "Please enter your search term!")
 
 #help subcommand, describes usage for !game
-@game.command()
-async def help():
+@game.command(pass_context=True)
+async def help(ctx):
     await client.send_message(
-        message.channel,
+        ctx.message.channel,
         ("Simply type **!game followed by the game "
          "you wished to be linked to** on Steam!\n\n"
 
@@ -192,10 +192,10 @@ async def help():
 
 
 #info subcommand, gives info about bot creator
-@game.command()
-async def info():
+@game.command(pass_context=True)
+async def info(ctx):
     await client.send_message(
-        message.channel,
+        ctx.message.channel,
         ("Game-Bot is written in Python, using Discord.py as an API "
          "wrapper for Discord. "
          "The bot was coded by <@156971607057760256>, a student at the "
@@ -203,35 +203,35 @@ async def info():
         )
 
     await client.send_message(
-        message.channel,
+        ctx.message.channel,
         ("You can take a look at the code at:\n"
          "https://github.com/taahamahdi/Game-Bot")
         )
 
 
 #bugs subcommand, links server for bug reports
-@game.command()
-async def bugs():
+@game.command(pass_context=True)
+async def bugs(ctx):
     await client.send_message(
-        message.channel,
+        ctx.message.channel,
         ("Please join https://discord.gg/AZTP5fK with all "
          "your bugs (and to talk with me, Cool :])")
         )
 
 
 #donate subcommand, gives donation link
-@game.command()
-async def donate():
+@game.command(pass_context=True)
+async def donate(ctx):
     await client.send_message(
-        message.channel,
+        ctx.message.channel,
         ("All money goes directly to server hosting and bot development, "
           "not to me (or anyone else).")
         )
     await client.send_message(
-        message.channel,
+        ctx.message.channel,
         "ETH: **0x8E48AD118491C571a5E22E990cea4A9d099cDEDc**")
     await client.send_message(
-        message.channel,
+        ctx.message.channel,
         "Other forms of donations coming soon!")
     
 
