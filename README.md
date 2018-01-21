@@ -2,6 +2,8 @@
 
 This Discord bot takes in a Steam game's name and returns its link on the Steam Store based on Valve's search suggest feature.
 
+[![Discord Bots](https://discordbots.org/api/widget/397546577314578433.svg)](https://discordbots.org/bot/397546577314578433)
+
 ## Dependencies
 
 `Discord.py`, `lxml`:
