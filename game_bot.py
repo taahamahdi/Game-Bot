@@ -101,63 +101,11 @@ def game_search(name):
     return app_id
 
 
-@client.event
-async def on_message(message):
-    if message.content.startswith('!game help'):
-
-        await client.send_message(
-            message.channel,
-            ("Simply type **!game followed by the game "
-             "you wished to be linked to** on Steam!\n\n"
-
-             "Use **!game bugs** to get a link to a Discord server "
-             "where you can report bugs.\n\n"
-
-             "Use **!game donate** for an ETH address to "
-             "help pay server hosting fees.\n\n"
-             "Use **!game info** to find out more about how the bot works!")
-            )
-
-    elif message.content.startswith('!game bugs'):
-
-        await client.send_message(
-            message.channel,
-            ("Please join https://discord.gg/AZTP5fK with all "
-             "your bugs (and to talk with me, Cool :])")
-            )
-
-    elif message.content.startswith('!game donate'):
-
-        await client.send_message(
-            message.channel,
-            ("All money goes directly to server hosting and bot development, "
-             "not to me (or anyone else).")
-            )
-        await client.send_message(
-            message.channel,
-            "ETH: **0x8E48AD118491C571a5E22E990cea4A9d099cDEDc**")
-        await client.send_message(
-            message.channel,
-            "Other forms of donations coming soon!")
-
-    elif message.content.startswith('!game info'):
-
-        await client.send_message(
-            message.channel,
-            ("Game-Bot is written in Python, using Discord.py as an API "
-             "wrapper for Discord. "
-             "The bot was coded by <@156971607057760256>, a student at the "
-             "University of Waterloo in Canada.")
-            )
-
-        await client.send_message(
-            message.channel,
-            ("You can take a look at the code at:\n"
-             "https://github.com/taahamahdi/Game-Bot")
-            )
-
-    elif message.content.startswith('!game'):  # When !game is entered in chat
-        game_name = message.content[6:]
+# creating game command group
+@client.group(pass_context=True)
+async def game(ctx):
+    if ctx.invoked_subcommand is None:
+        game_name = ctx.message.content[6:]
         if game_name.lower() == "csgo" \
             or game_name.lower() == "cs" \
                 or game_name.lower() == "cs:go":
@@ -225,6 +173,69 @@ async def on_message(message):
             await client.send_message(
                 message.channel,
                 "Please enter your search term!")
+
+#help subcommand, describes usage for !game
+@game.command()
+async def help():
+    await client.send_message(
+        message.channel,
+        ("Simply type **!game followed by the game "
+         "you wished to be linked to** on Steam!\n\n"
+
+         "Use **!game bugs** to get a link to a Discord server "
+         "where you can report bugs.\n\n"
+
+         "Use **!game donate** for an ETH address to "
+         "help pay server hosting fees.\n\n"
+         "Use **!game info** to find out more about how the bot works!")
+        )
+
+
+#info subcommand, gives info about bot creator
+@game.command()
+async def info():
+    await client.send_message(
+        message.channel,
+        ("Game-Bot is written in Python, using Discord.py as an API "
+         "wrapper for Discord. "
+         "The bot was coded by <@156971607057760256>, a student at the "
+         "University of Waterloo in Canada.")
+        )
+
+    await client.send_message(
+        message.channel,
+        ("You can take a look at the code at:\n"
+         "https://github.com/taahamahdi/Game-Bot")
+        )
+
+
+#bugs subcommand, links server for bug reports
+@game.command()
+async def bugs():
+    await client.send_message(
+        message.channel,
+        ("Please join https://discord.gg/AZTP5fK with all "
+         "your bugs (and to talk with me, Cool :])")
+        )
+
+
+#donate subcommand, gives donation link
+@game.command()
+async def donate():
+    await client.send_message(
+        message.channel,
+        ("All money goes directly to server hosting and bot development, "
+          "not to me (or anyone else).")
+        )
+    await client.send_message(
+        message.channel,
+        "ETH: **0x8E48AD118491C571a5E22E990cea4A9d099cDEDc**")
+    await client.send_message(
+        message.channel,
+        "Other forms of donations coming soon!")
+    
+
+
 
 
 if __name__ == "__main__":
