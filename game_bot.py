@@ -119,7 +119,7 @@ async def on_ready():
 @client.group(pass_context=True)
 async def game(ctx):
     if ctx.invoked_subcommand is None:
-        game_name = ctx.content[6:]
+        game_name = ctx.message.content[6:]
         if game_name.lower() == "csgo" \
             or game_name.lower() == "cs" \
                 or game_name.lower() == "cs:go":
