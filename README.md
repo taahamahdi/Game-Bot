@@ -6,7 +6,7 @@ This Discord bot takes in a Steam game's name and returns its link on the Steam 
 
 ## Dependencies
 
-`Discord.py`, `lxml`:
+`Discord.py`, `lxml`, `aiohttp`:
 ```
 python3 -m pip install -U discord.py lxml
 ```
