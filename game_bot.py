@@ -175,7 +175,8 @@ async def game(ctx):
                 ctx.message.channel,
                 "Please enter your search term!")
 
-#help subcommand, describes usage for !game
+
+# help subcommand, describes usage for !game
 @game.command(pass_context=True)
 async def help(ctx):
     await client.send_message(
@@ -192,7 +193,7 @@ async def help(ctx):
         )
 
 
-#info subcommand, gives info about bot creator
+# info subcommand, gives info about bot creator
 @game.command(pass_context=True)
 async def info(ctx):
     await client.send_message(
@@ -210,7 +211,7 @@ async def info(ctx):
         )
 
 
-#bugs subcommand, links server for bug reports
+# bugs subcommand, links server for bug reports
 @game.command(pass_context=True)
 async def bugs(ctx):
     await client.send_message(
@@ -220,23 +221,19 @@ async def bugs(ctx):
         )
 
 
-#donate subcommand, gives donation link
+# donate subcommand, gives donation link
 @game.command(pass_context=True)
 async def donate(ctx):
     await client.send_message(
         ctx.message.channel,
         ("All money goes directly to server hosting and bot development, "
-          "not to me (or anyone else).")
-        )
+         "not to me (or anyone else)."))
     await client.send_message(
         ctx.message.channel,
         "ETH: **0x8E48AD118491C571a5E22E990cea4A9d099cDEDc**")
     await client.send_message(
         ctx.message.channel,
         "Other forms of donations coming soon!")
-    
-
-
 
 
 if __name__ == "__main__":
