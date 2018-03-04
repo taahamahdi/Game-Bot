@@ -35,6 +35,8 @@ handler.setFormatter(logging.Formatter(
     '%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
+client.remove_command('help') 
+# Prevents bot from responding to !help calls
 
 # This code is from Hugop#2950 on the "Discord Bot List" server
 # This code provides provides the number of servers Game-Bot is
