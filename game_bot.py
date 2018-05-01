@@ -20,7 +20,7 @@ from lxml import html
 # os.environ["GAME_BOT_TOKEN"] = "TOKEN"
 # [Optional] Set your Bot token directly through the code
 
-base_url = "http://store.steampowered.com/search/suggest"
+base_url = "https://store.steampowered.com/search/suggest"
 appid_regex = re.compile("steam/apps/([0-9]+)/")
 
 client = Bot(command_prefix='!')  # Creating bot instance
