@@ -170,7 +170,7 @@ async def game(ctx):
                 if app_id:
                     await client.send_message(
                         ctx.message.channel,
-                        "http://store.steampowered.com/app/" + app_id)
+                        "https://store.steampowered.com/app/" + app_id)
                 else:
                     await client.send_message(
                         ctx.message.channel,
