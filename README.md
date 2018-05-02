@@ -28,7 +28,7 @@ showing up in your history.
 
 * Consider mapping game exceptions (like for CSGO and TF2) in a dictionary to replace the else if statements
 
-* When a game isn't found, react to the user's message with a crying emoji.
+* <del>When a game isn't found, react to the user's message with a crying emoji.</del>
 
 * <del>Add server counter for DiscordBots.org</del>
 
