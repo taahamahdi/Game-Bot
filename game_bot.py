@@ -9,7 +9,6 @@ import aiohttp
 from discord.ext.commands import Bot
 from lxml import html
 
-
 #
 # Game-Bot.py contains some functions based
 #   on Rapptz's Discord.py's bot examples
@@ -35,7 +34,7 @@ handler.setFormatter(logging.Formatter(
     '%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-client.remove_command('help') 
+client.remove_command('help')
 # Prevents bot from responding to !help calls
 
 # This code is from Hugop#2950 on the "Discord Bot List" server
@@ -92,7 +91,6 @@ def game_search(name):
     data = data.encode('utf-8')
     with urllib.request.urlopen(base_url, data) as f:
         resp = f.read()
-
     if not resp:
         logger.info("Received empty response for %s" % name)
         return None
@@ -108,6 +106,7 @@ def game_search(name):
 @client.group(pass_context=True)
 async def game(ctx):
     if ctx.invoked_subcommand is None:
+        await client.send_typing(ctx.message.channel)
         game_name = ctx.message.content[6:]
         if game_name.lower() == "csgo" \
             or game_name.lower() == "cs" \
@@ -116,19 +115,19 @@ async def game(ctx):
 
             await client.send_message(
                 ctx.message.channel,
-                "http://store.steampowered.com/app/730")
+                "https://store.steampowered.com/app/730")
 
         elif game_name.lower() == "pubg":
 
             await client.send_message(
                 ctx.message.channel,
-                "http://store.steampowered.com/app/578080")
+                "https://store.steampowered.com/app/578080")
 
         elif game_name.lower() == "n++":
 
             await client.send_message(
                 ctx.message.channel,
-                "http://store.steampowered.com/app/230270")
+                "https://store.steampowered.com/app/230270")
 
         elif game_name.lower() == "gta"     \
             or game_name.lower() == "gta5"  \
@@ -138,13 +137,32 @@ async def game(ctx):
 
             await client.send_message(
                 ctx.message.channel,
-                "http://store.steampowered.com/app/271590")
+                "https://store.steampowered.com/app/271590")
 
         elif game_name.lower() == "tf2":
 
             await client.send_message(
                 ctx.message.channel,
-                "http://store.steampowered.com/app/440")
+                "https://store.steampowered.com/app/440")
+
+        elif game_name.lower() == "fortnite":
+
+            await client.send_message(
+                ctx.message.channel,
+                "https://www.epicgames.com/fortnite")
+
+        elif game_name.lower() == "overwatch":
+
+            await client.send_message(
+                ctx.message.channel,
+                "https://playoverwatch.com")
+
+        elif game_name.lower() == "league of legends" \
+                or game_name.lower() == "lol":
+
+            await client.send_message(
+                ctx.message.channel,
+                "https://leagueoflegends.com")
 
         elif len(game_name) > 0:
             try:
@@ -159,6 +177,7 @@ async def game(ctx):
                         ("Please try again with less characters, "
                          "the game's full name, or with a different game.")
                         )
+                    await client.add_reaction(ctx.message, "\U0001F622")
 
             except urllib.error.HTTPError as e:
                 code = e.code
@@ -171,6 +190,7 @@ async def game(ctx):
                 await client.send_message(
                     ctx.message.channel, "Exception :("
                 )
+                await client.add_reaction(ctx.message, "\U0001F62D")
 
         else:
             await client.send_message(
@@ -181,6 +201,7 @@ async def game(ctx):
 # help subcommand, describes usage for !game
 @game.command(pass_context=True)
 async def help(ctx):
+    await client.send_typing(ctx.message.channel)
     await client.send_message(
         ctx.message.channel,
         ("Simply type **!game followed by the game "
@@ -192,7 +213,7 @@ async def help(ctx):
          "Use **!game donate** for an ETH address to "
          "help pay server hosting fees.\n\n"
          "Use **!game info** to find out more about how the bot works!\n\n"
-        
+
          "Add a backslash to find a game that starts with \"bugs,\""
          " \"donate,\" or \"info.\"")
         )
@@ -201,6 +222,7 @@ async def help(ctx):
 # info subcommand, gives info about bot creator
 @game.command(pass_context=True)
 async def info(ctx):
+    await client.send_typing(ctx.message.channel)
     await client.send_message(
         ctx.message.channel,
         ("Game-Bot is written in Python, using Discord.py as an API "
@@ -208,7 +230,7 @@ async def info(ctx):
          "The bot was coded by <@156971607057760256>, a student at the "
          "University of Waterloo in Canada.")
         )
-
+    await client.send_typing(ctx.message.channel)
     await client.send_message(
         ctx.message.channel,
         ("You can take a look at the code at:\n"
@@ -219,23 +241,27 @@ async def info(ctx):
 # bugs subcommand, links server for bug reports
 @game.command(pass_context=True)
 async def bugs(ctx):
+    await client.send_typing(ctx.message.channel)
     await client.send_message(
         ctx.message.channel,
         ("Please join https://discord.gg/AZTP5fK with all "
-         "your bugs (and to talk with me, Cool :])")
+         "your bugs (and to talk with me, <@156971607057760256> :])")
         )
 
 
 # donate subcommand, gives donation link
 @game.command(pass_context=True)
 async def donate(ctx):
+    await client.send_typing(ctx.message.channel)
     await client.send_message(
         ctx.message.channel,
         ("All money goes directly to server hosting and bot development, "
          "not to me (or anyone else)."))
+    await client.send_typing(ctx.message.channel)
     await client.send_message(
         ctx.message.channel,
         "ETH: **0x8E48AD118491C571a5E22E990cea4A9d099cDEDc**")
+    await client.send_typing(ctx.message.channel)
     await client.send_message(
         ctx.message.channel,
         "Other forms of donations coming soon!")
