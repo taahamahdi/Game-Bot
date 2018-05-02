@@ -174,7 +174,7 @@ async def game(ctx):
                 else:
                     await client.send_message(
                         ctx.message.channel,
-                        ("Please try again with less characters, "
+                        ("Please try again with fewer characters, "
                          "the game's full name, or with a different game.")
                         )
                     await client.add_reaction(ctx.message, "\U0001F622")
