@@ -35,6 +35,7 @@ handler.setFormatter(logging.Formatter(
 logger.addHandler(handler)
 
 client.remove_command('help')
+# Prevents bot from responding to !help calls
 
 game_exceptions = {
     "csgo": "https://store.steampowered.com/app/730",
@@ -50,10 +51,12 @@ game_exceptions = {
     "tf2": "https://store.steampowered.com/app/440",
     "fortnite": "https://www.epicgames.com/fortnite",
     "overwatch": "https://playoverwatch.com",
+    "hearthstone": "https://playhearthstone.com",
     "league of legends": "https://leagueoflegends.com",
-    "lol": "https://leagueoflegends.com"
+    "lol": "https://leagueoflegends.com",
+    "osu": "https://osu.ppy.sh",
+    "osu!": "https://osu.ppy.sh"
 }
-# Prevents bot from responding to !help calls
 
 # This code is from Hugop#2950 on the "Discord Bot List" server
 # This code provides provides the number of servers Game-Bot is
@@ -76,20 +79,18 @@ async def on_server_join(server):
     payload = {"server_count": len(client.servers)}
     await dbl_post(payload, client.user.id)
 
-
 async def on_server_remove(server):
     payload = {"server_count": len(client.servers)}
     await dbl_post(payload, client.user.id)
 
 # end of Hugop's code
 
-
 @client.event
 async def on_ready():
     print('Logged in as:')
     print(client.user.name)
     print(client.user.id)
-    print('------')  # To show that the bot can log in
+    print('------')
     await client.change_presence(game=discord.Game(name='!game help'))
 
     payload = {"server_count": len(client.servers)}
@@ -148,12 +149,12 @@ async def game(ctx):
                 code = e.code
                 logger.error("Got HTTPError %s" % code)
                 await client.send_message(
-                    ctx.message.channel, "Error {} returned :(".format(code)
+                    ctx.message.channel, "Error {} returned :[".format(code)
                 )
             except Exception as e:
                 logger.exception("Exception in game searching")
                 await client.send_message(
-                    ctx.message.channel, "Exception :("
+                    ctx.message.channel, "Exception :["
                 )
                 await client.add_reaction(ctx.message, "\U0001F62D")
 
@@ -170,15 +171,12 @@ async def help(ctx):
     await client.send_message(
         ctx.message.channel,
         ("Simply type **!game followed by the game "
-         "you wished to be linked to** on Steam!\n\n"
-
+         "you wished to be linked to** on Steam.\n"
          "Use **!game bugs** to get a link to a Discord server "
-         "where you can report bugs.\n\n"
-
+         "where you can report bugs.\n"
          "Use **!game donate** for an ETH address to "
-         "help pay server hosting fees.\n\n"
-         "Use **!game info** to find out more about how the bot works!\n\n"
-
+         "help pay server hosting fees.\n"
+         "Use **!game info** to find out more about how the bot works!\n"
          "Add a backslash to find a game that starts with \"bugs,\""
          " \"donate,\" or \"info.\"")
     )
@@ -220,17 +218,13 @@ async def donate(ctx):
     await client.send_typing(ctx.message.channel)
     await client.send_message(
         ctx.message.channel,
-        ("All money goes directly to server hosting and bot development, "
-         "not to me (or anyone else)."))
+        "All money goes directly to server hosting fees."
+    )
     await client.send_typing(ctx.message.channel)
     await client.send_message(
         ctx.message.channel,
-        "ETH: **0x8E48AD118491C571a5E22E990cea4A9d099cDEDc**")
-    await client.send_typing(ctx.message.channel)
-    await client.send_message(
-        ctx.message.channel,
-        "Other forms of donations coming soon!")
-
+        "**ETH**: 0x8E48AD118491C571a5E22E990cea4A9d099cDEDc"
+    )
 
 if __name__ == "__main__":
     token = os.environ.get("GAME_BOT_TOKEN")
