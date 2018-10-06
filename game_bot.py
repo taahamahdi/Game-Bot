@@ -35,6 +35,24 @@ handler.setFormatter(logging.Formatter(
 logger.addHandler(handler)
 
 client.remove_command('help')
+
+game_exceptions = {
+    "csgo": "https://store.steampowered.com/app/730",
+    "cs": "https://store.steampowered.com/app/730",
+    "cs:go": "https://store.steampowered.com/app/730",
+    "pubg": "https://store.steampowered.com/app/578080",
+    "n++": "https://store.steampowered.com/app/230270",
+    "gta": "https://store.steampowered.com/app/271590",
+    "gta5": "https://store.steampowered.com/app/271590",
+    "gtav": "https://store.steampowered.com/app/271590",
+    "gta 5": "https://store.steampowered.com/app/271590",
+    "gta v": "https://store.steampowered.com/app/271590",
+    "tf2": "https://store.steampowered.com/app/440",
+    "fortnite": "https://www.epicgames.com/fortnite",
+    "overwatch": "https://playoverwatch.com",
+    "league of legends": "https://leagueoflegends.com",
+    "lol": "https://leagueoflegends.com"
+}
 # Prevents bot from responding to !help calls
 
 # This code is from Hugop#2950 on the "Discord Bot List" server
@@ -49,7 +67,7 @@ async def dbl_post(payload, bot_id):
         url = "https://discordbots.org/api/bots/" + bot_id + "/stats"
         headers = {"Authorization": dbltoken}
         async with aiohttp.ClientSession() as aioclient:
-                await aioclient.post(url, data=payload, headers=headers)
+            await aioclient.post(url, data=payload, headers=headers)
 
 
 # on_server_join(server) and on_server_remove(server) keep a count of
@@ -64,7 +82,6 @@ async def on_server_remove(server):
     await dbl_post(payload, client.user.id)
 
 # end of Hugop's code
-
 
 
 @client.event
@@ -108,62 +125,10 @@ async def game(ctx):
     if ctx.invoked_subcommand is None:
         await client.send_typing(ctx.message.channel)
         game_name = ctx.message.content[6:]
-        if game_name.lower() == "csgo" \
-            or game_name.lower() == "cs" \
-                or game_name.lower() == "cs:go":
-            # To bypass API shortcomings for popular games
-
+        if game_name.lower() in game_exceptions:
             await client.send_message(
                 ctx.message.channel,
-                "https://store.steampowered.com/app/730")
-
-        elif game_name.lower() == "pubg":
-
-            await client.send_message(
-                ctx.message.channel,
-                "https://store.steampowered.com/app/578080")
-
-        elif game_name.lower() == "n++":
-
-            await client.send_message(
-                ctx.message.channel,
-                "https://store.steampowered.com/app/230270")
-
-        elif game_name.lower() == "gta"     \
-            or game_name.lower() == "gta5"  \
-            or game_name.lower() == "gtav"  \
-            or game_name.lower() == "gta 5" \
-                or game_name.lower() == "gta v":
-
-            await client.send_message(
-                ctx.message.channel,
-                "https://store.steampowered.com/app/271590")
-
-        elif game_name.lower() == "tf2":
-
-            await client.send_message(
-                ctx.message.channel,
-                "https://store.steampowered.com/app/440")
-
-        elif game_name.lower() == "fortnite":
-
-            await client.send_message(
-                ctx.message.channel,
-                "https://www.epicgames.com/fortnite")
-
-        elif game_name.lower() == "overwatch":
-
-            await client.send_message(
-                ctx.message.channel,
-                "https://playoverwatch.com")
-
-        elif game_name.lower() == "league of legends" \
-                or game_name.lower() == "lol":
-
-            await client.send_message(
-                ctx.message.channel,
-                "https://leagueoflegends.com")
-
+                game_exceptions[game_name.lower()])
         elif len(game_name) > 0:
             try:
                 app_id = game_search(game_name)
@@ -176,7 +141,7 @@ async def game(ctx):
                         ctx.message.channel,
                         ("Please try again with fewer characters, "
                          "the game's full name, or with a different game.")
-                        )
+                    )
                     await client.add_reaction(ctx.message, "\U0001F622")
 
             except urllib.error.HTTPError as e:
@@ -216,7 +181,7 @@ async def help(ctx):
 
          "Add a backslash to find a game that starts with \"bugs,\""
          " \"donate,\" or \"info.\"")
-        )
+    )
 
 
 # info subcommand, gives info about bot creator
@@ -229,13 +194,13 @@ async def info(ctx):
          "wrapper for Discord. "
          "The bot was coded by <@156971607057760256>, a student at the "
          "University of Waterloo in Canada.")
-        )
+    )
     await client.send_typing(ctx.message.channel)
     await client.send_message(
         ctx.message.channel,
         ("You can take a look at the code at:\n"
          "https://github.com/taahamahdi/Game-Bot")
-        )
+    )
 
 
 # bugs subcommand, links server for bug reports
@@ -246,7 +211,7 @@ async def bugs(ctx):
         ctx.message.channel,
         ("Please join https://discord.gg/AZTP5fK with all "
          "your bugs (and to talk with me, <@156971607057760256> :])")
-        )
+    )
 
 
 # donate subcommand, gives donation link
