@@ -25,8 +25,9 @@ showing up in your history.
 **Make sure you are running Python 3.4.2+!**
 
 ## To do:
+* Consider alternative strategy when game isn't on steam store rather than hard-coding (maybe IGDB) 
 
-* Consider mapping game exceptions (like for CSGO and TF2) in a dictionary to replace the else if statements
+* <del> Consider mapping game exceptions (like for CSGO and TF2) in a dictionary to replace the else if statements </del>
 
 * <del>When a game isn't found, react to the user's message with a crying emoji.</del>
 
