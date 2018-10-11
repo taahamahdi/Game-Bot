@@ -55,7 +55,9 @@ game_exceptions = {
     "league of legends": "https://leagueoflegends.com",
     "lol": "https://leagueoflegends.com",
     "osu": "https://osu.ppy.sh",
-    "osu!": "https://osu.ppy.sh"
+    "osu!": "https://osu.ppy.sh",
+    "roblox": "https://roblox.com",
+    "arkaprime": "http://173.34.17.10"
 }
 
 # This code is from Hugop#2950 on the "Discord Bot List" server
