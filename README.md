@@ -14,7 +14,7 @@ python3 -m pip install -U discord.py lxml
 Set the environment variable `GAME_BOT_TOKEN` as your token, eg.
 
 ```
- export GAME_BOT_TOKEN=foobar
+export GAME_BOT_TOKEN=foobar
 python3 game_bot.py
 ```
 
@@ -27,13 +27,11 @@ showing up in your history.
 ## To do:
 * Consider alternative strategy when game isn't on steam store rather than hard-coding (maybe IGDB) 
 
-* <del> Consider mapping game exceptions (like for CSGO and TF2) in a dictionary to replace the else if statements </del>
+* <del>Consider mapping game exceptions (like for CSGO and TF2) in a dictionary to replace the else if statements</del>
 
 * <del>When a game isn't found, react to the user's message with a crying emoji.</del>
 
 * <del>Add server counter for DiscordBots.org</del>
-
-* <del>Redirect "TF2" to Team Fortress 2</del>
 
 * <del>Change "Try again with more characters or a different game!" to "Try again with less characters or a different game!"</del>
 
