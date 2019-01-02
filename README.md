@@ -6,9 +6,9 @@ This Discord bot takes in a Steam game's name and returns its link on the Steam 
 
 ## Dependencies
 
-`Discord.py`, `lxml`, `aiohttp`:
+`discord.py`, `lxml`, `aiohttp`, `sqlitedict`, `psutil`, `dblpy`:
 ```
-python3 -m pip install -U discord.py lxml
+python3 -m pip install --user discord.py lxml aiohttp sqlitedict psutil dblpy
 ```
 
 Set the environment variable `GAME_BOT_TOKEN` as your token, eg.
