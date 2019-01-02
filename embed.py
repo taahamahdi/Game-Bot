@@ -92,27 +92,26 @@ def game_message(app_id, ctx):
     if json_obj[app_id]['success']:
         data = json_obj[app_id]['data']
 
-        if data['is_free']:
-            price = "Free"
-        else:
-            price = get_price(data)
-        required_age = int(data['required_age'])
-
         embed = discord.Embed(
             title=data['name'],
             url="https://store.steampowered.com/app/%s" % app_id,
             description=data['short_description'],
             color=EMBED_COLOR)
-        embed.add_field(name="Price",
-                        value=price,
-                        inline=True)
+        if 'price_overview' in data:
+            if data['is_free']:
+                price = "Free"
+            else:
+                price = get_price(data)
+            embed.add_field(name="Price",
+                            value=price,
+                            inline=True)
         if 'metacritic' in data:
             embed.add_field(name="Metacritic Score",
                             value=data['metacritic']['score'],
                             inline=True)
-        if required_age > 0:
+        if int(data['required_age']) > 0:
             embed.add_field(name="Required Age",
-                            value=required_age,
+                            value=int(data['required_age']),
                             inline=True)
         embed.add_field(name="Genres",
                         value=get_genres(data['genres']),
