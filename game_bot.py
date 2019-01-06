@@ -53,9 +53,17 @@ async def on_ready():
     print("Logged in as:")
     print(client.user.name)
     print(client.user.id)
+    print("Server count: %s" % len(client.servers))
     print("------")
     await client.change_presence(game=discord.Game(name='!game help'))
     dbl_tracker.setup(client)
+
+
+# Handle CommandNotFound Exception
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, discord.ext.commands.errors.CommandNotFound):
+        pass
 
 
 def game_search(name):
