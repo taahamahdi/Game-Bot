@@ -7,6 +7,7 @@ import urllib.parse
 import psutil
 
 from discord.ext.commands import Bot
+from discord.ext.commands import CommandNotFound
 from lxml import html
 
 import dbl_tracker
@@ -62,8 +63,8 @@ async def on_ready():
 # Handle CommandNotFound Exception
 @client.event
 async def on_command_error(ctx, error):
-    if isinstance(error, discord.ext.commands.errors.CommandNotFound):
-        pass
+    if isinstance(error, CommandNotFound):
+        return
 
 
 def game_search(name):
