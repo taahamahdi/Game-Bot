@@ -97,6 +97,7 @@ def game_message(app_id, ctx):
             url="https://store.steampowered.com/app/%s" % app_id,
             description=data['short_description'],
             color=EMBED_COLOR)
+
         if 'price_overview' in data:
             if data['is_free']:
                 price = "Free"
@@ -105,24 +106,35 @@ def game_message(app_id, ctx):
             embed.add_field(name="Price",
                             value=price,
                             inline=True)
+
         if 'metacritic' in data:
             embed.add_field(name="Metacritic Score",
                             value=data['metacritic']['score'],
                             inline=True)
+
         if int(data['required_age']) > 0:
             embed.add_field(name="Required Age",
                             value=int(data['required_age']),
                             inline=True)
-        embed.add_field(name="Genres",
-                        value=get_genres(data['genres']),
-                        inline=True)
-        embed.add_field(name="Platforms",
-                        value=get_platforms(data['platforms']),
-                        inline=True)
-        embed.add_field(name="Release Date",
-                        value=get_release_date(data['release_date']),
-                        inline=True)
-        embed.set_image(url=data['header_image'])
+
+        if 'genres' in data:
+            embed.add_field(name="Genres",
+                            value=get_genres(data['genres']),
+                            inline=True)
+
+        if 'platforms' in data:
+            embed.add_field(name="Platforms",
+                            value=get_platforms(data['platforms']),
+                            inline=True)
+
+        if 'release_date' in data:
+            embed.add_field(name="Release Date",
+                            value=get_release_date(data['release_date']),
+                            inline=True)
+
+        if 'header_image' in data:
+            embed.set_image(url=data['header_image'])
+
         return embed
     else:
         return None

@@ -67,14 +67,16 @@ async def on_command_error(ctx, error):
         return
 
 
-def game_search(name):
+def game_search(name, country="us"):
     """Search for a game with the given name.
 
     Returns None if no results were found;
     otherwise returns the appid as a string
     """
     logger.info("Searching for %s" % name)
-    data = urllib.parse.urlencode({'term': name, 'f': 'games'})
+    data = urllib.parse.urlencode({'term': name,
+                                   'f': 'games',
+                                   'cc': country})
     data = data.encode('utf-8')
     with urllib.request.urlopen(SEARCH_SUGGEST_URL, data) as f:
         resp = f.read()
@@ -118,7 +120,12 @@ async def game(ctx):
                                           game_exceptions[game_name.lower()])
         elif len(game_name) > 0:
             try:
-                app_id = game_search(game_name)
+                if int(ctx.message.server.id) in user_preferences_dict:
+                    country = user_preferences_dict[int(ctx.message.server.id)]
+                    app_id = game_search(game_name, country)
+                else:
+                    app_id = game_search(game_name)
+
                 if app_id:
                     embed = game_message(app_id, ctx)
                     if embed:

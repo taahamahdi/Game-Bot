@@ -32,17 +32,9 @@ HELP_FOOTER = ("Psst. Add a backslash to find a game that starts with "
 user_preferences_dict = SqliteDict('./user_preferences.db', autocommit=True)
 
 game_exceptions = {
-    "csgo": "https://store.steampowered.com/app/730",
-    "cs": "https://store.steampowered.com/app/730",
     "cs:go": "https://store.steampowered.com/app/730",
-    "pubg": "https://store.steampowered.com/app/578080",
     "n++": "https://store.steampowered.com/app/230270",
-    "gta": "https://store.steampowered.com/app/271590",
-    "gta5": "https://store.steampowered.com/app/271590",
-    "gtav": "https://store.steampowered.com/app/271590",
     "gta 5": "https://store.steampowered.com/app/271590",
-    "gta v": "https://store.steampowered.com/app/271590",
-    "tf2": "https://store.steampowered.com/app/440",
     "fortnite": "https://www.epicgames.com/fortnite",
     "overwatch": "https://playoverwatch.com",
     "hearthstone": "https://playhearthstone.com",
