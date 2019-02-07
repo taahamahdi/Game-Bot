@@ -42,5 +42,6 @@ game_exceptions = {
     "lol": "https://leagueoflegends.com",
     "osu": "https://osu.ppy.sh",
     "osu!": "https://osu.ppy.sh",
-    "roblox": "https://roblox.com"
+    "roblox": "https://roblox.com",
+    "forza horizon 4": "https://www.microsoft.com/en-us/p/forza-horizon-4/9pnqkhfld2wq"
 }
