@@ -1,6 +1,7 @@
 import json
 import discord
 import urllib
+import html
 
 from constants import user_preferences_dict
 from constants import EMBED_COLOR
@@ -95,7 +96,7 @@ def game_message(app_id, ctx):
         embed = discord.Embed(
             title=data['name'],
             url="https://store.steampowered.com/app/%s" % app_id,
-            description=data['short_description'],
+            description=html.unescape(data['short_description']),
             color=EMBED_COLOR)
 
         if 'price_overview' in data:
