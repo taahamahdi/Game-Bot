@@ -72,7 +72,7 @@ def get_genres(genre_info):
 
 def get_platforms(platform_info):
     platform_list = [platform.title()
-                     for platform, value in platform_info if value]
+                     for platform, value in platform_info.items() if value]
     return '\n'.join(map(str, platform_list))
 
 
