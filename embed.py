@@ -64,9 +64,7 @@ def get_release_date(rdate_info):
 
 
 def get_genres(genre_info):
-    genre_list = []
-    for genre in genre_info:
-        genre_list.append(genre['description'])
+    genre_list = [genre['description'] for genre in genre_info]
     return '\n'.join(map(str, genre_list))
 
 
