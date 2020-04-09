@@ -14,14 +14,14 @@ SOURCE_INFO = ("Game-Bot is written in Python, using Discord.py as an API "
                "wrapper for Discord. "
                "The bot was coded by %s, a student at the "
                "University of Waterloo in Canada." % BOT_AUTHOR)
+BOT_IMAGE = ("https://images.discordapp.net/avatars/397546577314578433/"
+              "de563a0727274f7d5547d13e3f4fd7c1.png?size=64")
 
 
 HELP_URL = "https://discord.gg/AZTP5fK"
-HELP_IMAGE = ("https://images.discordapp.net/avatars/397546577314578433/"
-              "de563a0727274f7d5547d13e3f4fd7c1.png?size=64")
 HELP_COUNTRY_VAL = "Set the country from which to display game prices."
 HELP_STATS_VAL = "Get statistics about the server Game-Bot is running on."
-HELP_BUGS_VAL = ("Get a link to Game-Bot's Discord server, where you can "
+HELP_BUGS_VAL = ("Get a link to Game-Bot's guild, where you can "
                  "report any bugs or issues you find.")
 HELP_SOURCE_VAL = ("Get the Github repository for Game-Bot. You are welcome "
                    "to make a pull request!")

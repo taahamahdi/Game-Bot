@@ -54,9 +54,9 @@ async def on_ready():
     print("Logged in as:")
     print(client.user.name)
     print(client.user.id)
-    print("Server count: %s" % len(client.servers))
+    print("Guild count: %s" % len(client.guilds))
     print("------")
-    await client.change_presence(game=discord.Game(name='!game help'))
+    await client.change_presence(activity=discord.Game(name='!game help'))
     dbl_tracker.setup(client)
 
 
@@ -86,9 +86,127 @@ def game_search(name, country="us"):
 
     tree = html.fromstring(resp)
     img_url = tree.xpath('//img[position() = 1]')[0].get("src")
-    app_id = APPID_REGEX.search(img_url).group(1)
+    app_id_search = APPID_REGEX.search(img_url)
+    if not app_id_search:
+        logger.info("Regular expression returned NoneType for %s" % name)
+        return None
+
+    app_id = app_id_search.group(1)
     logger.debug("Returning appid %s" % app_id)
     return app_id
+
+
+# creating game command group
+@client.group()
+async def game(ctx):
+    if ctx.invoked_subcommand is None:
+        await ctx.trigger_typing()
+
+        # Keep count of calls to !game
+        increment_count('total_game_count', user_preferences_dict)
+
+        game_name = ctx.message.content[6:]
+        if game_name.lower() in game_exceptions:
+            if "steampowered" in game_exceptions[game_name.lower()]:
+                await ctx.send(embed=game_message(
+                    re.findall("\d+",
+                               game_exceptions[game_name.lower()])[0],
+                    ctx))
+            else:
+                await ctx.send(game_exceptions[game_name.lower()])
+        elif len(game_name) > 0:
+            try:
+                if int(ctx.guild.id) in user_preferences_dict:
+                    country = user_preferences_dict[int(ctx.guild.id)]
+                    app_id = game_search(game_name, country)
+                else:
+                    app_id = game_search(game_name)
+
+                if app_id:
+                    embed = game_message(app_id, ctx)
+                    if embed:
+                        await ctx.send(embed=embed)
+                    else:
+                        await ctx.channel.send(STORE_BASE_URL + app_id)
+                else:
+                    await ctx.channel.send(INVALID_GAME_NAME)
+                    await ctx.message.add_reaction(CRY_EMOJI)
+
+            except urllib.error.HTTPError as e:
+                code = e.code
+                logger.error("Got HTTPError %s" % code)
+                await ctx.channel.send("Error {} returned :[".format(code))
+                await ctx.channel.send("Please report this bug in %s." % HELP_URL)
+                await ctx.channel.send("Here's the error:")
+                await ctx.channel.send(code_format("%s" % e))
+                await ctx.message.add_reaction(SOB_EMOJI)
+            except Exception as e:
+                logger.exception("Exception in game searching %s" % e)
+                await ctx.channel.send("Exception :[")
+                await ctx.channel.send("Please report this bug in %s." % HELP_URL)
+                await ctx.channel.send("Here's the error:")
+                await ctx.channel.send(code_format("%s" % e))
+                await ctx.message.add_reaction(SOB_EMOJI)
+
+        else:
+            await ctx.channel.send("Please enter your search term.")
+
+
+# help subcommand, describes usage for !game
+@game.command()
+async def help(ctx):
+    await ctx.trigger_typing()
+    await ctx.send(embed=HELP_EMBED)
+
+
+# stats subcommand, gives bot usage info
+@game.command()
+async def stats(ctx):
+    await ctx.trigger_typing()
+    cpu_usage = psutil.cpu_percent()
+    mem_usage = dict(psutil.virtual_memory()._asdict())['percent']
+    stats_embed = get_stats_embed(cpu_usage,
+                                  mem_usage,
+                                  len(client.guilds),
+                                  user_preferences_dict['total_game_count'])
+    await ctx.send(embed=stats_embed)
+
+
+# source subcommand, gives source code/creator info
+@game.command()
+async def source(ctx):
+    await ctx.trigger_typing()
+    await ctx.channel.send(SOURCE_INFO)
+    await ctx.trigger_typing()
+    await ctx.channel.send(
+        ("You can take a look at the code at:\n"
+         "https://github.com/taahamahdi/Game-Bot")
+    )
+
+
+# bugs subcommand, links guild for bug reports
+@game.command()
+async def bugs(ctx):
+    await ctx.trigger_typing()
+    await ctx.channel.send(
+        ("Please join %s with all your bugs (and to talk with me, "
+         "<@156971607057760256> :])" % HELP_URL))
+
+
+# country subcommand, store the user's country preferences in another file
+@game.command()
+async def country(ctx):
+    await ctx.trigger_typing()
+    country = ctx.message.content[14:]
+    guild_id = ctx.guild.id
+    if len(country) == 2:
+        user_preferences_dict[guild_id] = country
+        await ctx.channel.send(
+            "Country set to %s." % code_format(country))
+    else:
+        await ctx.channel.send(
+            ("Invalid country code. Consult this list to find your country "
+             "code:\nhttps://laendercode.net/en/2-letter-list.html"))
 
 
 # TODO: Implement daily/monthly usage counters
@@ -99,135 +217,10 @@ def increment_count(dict_key, dictionary):
         dictionary[dict_key] = 0
 
 
-# creating game command group
-@client.group(pass_context=True)
-async def game(ctx):
-    if ctx.invoked_subcommand is None:
-        await client.send_typing(ctx.message.channel)
-
-        # Keep count of calls to !game
-        increment_count('total_game_count', user_preferences_dict)
-
-        game_name = ctx.message.content[6:]
-        if game_name.lower() in game_exceptions:
-            if "steampowered" in game_exceptions[game_name.lower()]:
-                await client.say(embed=game_message(
-                    re.findall("\d+",
-                               game_exceptions[game_name.lower()])[0],
-                    ctx))
-            else:
-                await client.send_message(ctx.message.channel,
-                                          game_exceptions[game_name.lower()])
-        elif len(game_name) > 0:
-            try:
-                if int(ctx.message.server.id) in user_preferences_dict:
-                    country = user_preferences_dict[int(ctx.message.server.id)]
-                    app_id = game_search(game_name, country)
-                else:
-                    app_id = game_search(game_name)
-
-                if app_id:
-                    embed = game_message(app_id, ctx)
-                    if embed:
-                        await client.say(embed=game_message(app_id, ctx))
-                    else:
-                        await client.send_message(ctx.message.channel,
-                                                  STORE_BASE_URL + app_id)
-                else:
-                    await client.send_message(ctx.message.channel,
-                                              INVALID_GAME_NAME)
-                    await client.add_reaction(ctx.message, CRY_EMOJI)
-
-            except urllib.error.HTTPError as e:
-                code = e.code
-                logger.error("Got HTTPError %s" % code)
-                await client.send_message(ctx.message.channel,
-                                          "Error {} returned :[".format(code))
-                await client.send_message(ctx.message.channel,
-                                          "Please report this bug in %s."
-                                          % HELP_URL)
-                await client.add_reaction(ctx.message, SOB_EMOJI)
-            except Exception as e:
-                logger.exception("Exception in game searching %s" % e)
-                await client.send_message(
-                    ctx.message.channel, "Exception :["
-                )
-                await client.send_message(ctx.message.channel,
-                                          "Please report this bug in %s."
-                                          % HELP_URL)
-                await client.add_reaction(ctx.message, SOB_EMOJI)
-
-        else:
-            await client.send_message(
-                ctx.message.channel,
-                "Please enter your search term.")
-
-
-# help subcommand, describes usage for !game
-@game.command(pass_context=True)
-async def help(ctx):
-    await client.send_typing(ctx.message.channel)
-    await client.say(embed=HELP_EMBED)
-
-
-# stats subcommand, gives bot usage info
-@game.command(pass_context=True)
-async def stats(ctx):
-    await client.send_typing(ctx.message.channel)
-    cpu_usage = psutil.cpu_percent()
-    mem_usage = dict(psutil.virtual_memory()._asdict())['percent']
-    stats_embed = get_stats_embed(cpu_usage,
-                                  mem_usage,
-                                  len(client.servers),
-                                  user_preferences_dict['total_game_count'])
-    await client.say(embed=stats_embed)
-
-
-# source subcommand, gives source code/creator info
-@game.command(pass_context=True)
-async def source(ctx):
-    await client.send_typing(ctx.message.channel)
-    await client.send_message(ctx.message.channel, SOURCE_INFO)
-    await client.send_typing(ctx.message.channel)
-    await client.send_message(
-        ctx.message.channel,
-        ("You can take a look at the code at:\n"
-         "https://github.com/taahamahdi/Game-Bot")
-    )
-
-
-# bugs subcommand, links server for bug reports
-@game.command(pass_context=True)
-async def bugs(ctx):
-    await client.send_typing(ctx.message.channel)
-    await client.send_message(
-        ctx.message.channel,
-        ("Please join %s with all your bugs (and to talk with me, "
-         "<@156971607057760256> :])" % HELP_URL))
-
-
 def code_format(item):
     """ Surrounds given item with '`', which will make it appear as code in
     Discord chat."""
     return "`%s`" % item
-
-
-# country subcommand, store the user's country preferences in another file
-@game.command(pass_context=True)
-async def country(ctx):
-    await client.send_typing(ctx.message.channel)
-    country = ctx.message.content[14:]
-    server_id = int(ctx.message.server.id)
-    if len(country) == 2:
-        user_preferences_dict[server_id] = country
-        await client.send_message(
-            ctx.message.channel,
-            "Country set to %s." % code_format(country))
-    else:
-        await client.send_message(
-            ctx.message.channel,
-            ("Invalid country code. Consult this list to find your country "
-             "code:\nhttps://laendercode.net/en/2-letter-list.html"))
 
 
 if __name__ == "__main__":
