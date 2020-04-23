@@ -88,7 +88,7 @@ def game_message(app_id, ctx):
 
         if int(data['required_age']) > 0:
             embed.add_field(name="Required Age",
-                            value=int(data['required_age']),
+                            value=data['required_age'],
                             inline=True)
 
         if 'genres' in data:
@@ -101,7 +101,7 @@ def game_message(app_id, ctx):
                             value=get_platforms(data['platforms']),
                             inline=True)
 
-        if 'release_date' in data:
+        if 'release_date' in data and get_release_date(data['release_date']):
             embed.add_field(name="Release Date",
                             value=get_release_date(data['release_date']),
                             inline=True)
@@ -124,7 +124,7 @@ def get_price(data):
 def get_release_date(rdate_info):
     if rdate_info['coming_soon']:
         return "Coming soon"
-    return rdate_info['date']
+    return rdate_info['date'] if rdate_info['date'] else ""
 
 
 def get_genres(genre_info):
