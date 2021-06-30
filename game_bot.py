@@ -32,7 +32,7 @@ from embed import game_message
 # [Optional] Set your Bot token directly through the code
 # os.environ["GAME_BOT_TOKEN"] = "TOKEN"
 
-client = Bot(command_prefix='!')  # Creating bot instance
+client = Bot(command_prefix='!', activity= discord.Game(name='!game help'))  # Creating bot instance
 
 # Prevents bot from responding to !help calls
 client.remove_command('help')
@@ -56,7 +56,6 @@ async def on_ready():
     print(client.user.id)
     print("Guild count: %s" % len(client.guilds))
     print("------")
-    await client.change_presence(activity=discord.Game(name='!game help'))
     dbl_tracker.setup(client)
 
 
