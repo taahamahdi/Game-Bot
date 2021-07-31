@@ -54,9 +54,9 @@ def game_message(app_id, ctx):
     """ Creates and sends an Discord embed message with relevant game
     data.
     """
-    guild_id = int(ctx.message.guild.id)
-    if guild_id in user_preferences_dict:
-        country_code = user_preferences_dict[guild_id]
+    guild_or_author_id = int(ctx.guild.id) if ctx.guild else int(ctx.message.author.id)
+    if guild_or_author_id in user_preferences_dict:
+        country_code = user_preferences_dict[guild_or_author_id]
     else:
         country_code = 'us'
     j = urllib.request.urlopen(

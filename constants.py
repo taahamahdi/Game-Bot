@@ -45,5 +45,6 @@ game_exceptions = {
     "roblox": "https://roblox.com",
     "forza horizon 4": "https://www.microsoft.com/en-us/p/forza-horizon-4/9pnqkhfld2wq",
     "gta 4": "https://store.steampowered.com/app/901583",
-    "gta iv": "https://store.steampowered.com/app/901583"
+    "gta iv": "https://store.steampowered.com/app/901583",
+    "minecraft": "https://minecraft.net"
 }

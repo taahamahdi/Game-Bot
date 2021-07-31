@@ -116,8 +116,9 @@ async def game(ctx):
                 await ctx.send(game_exceptions[game_name.lower()])
         elif len(game_name) > 0:
             try:
-                if int(ctx.guild.id) in user_preferences_dict:
-                    country = user_preferences_dict[int(ctx.guild.id)]
+                guild_or_author_id = int(ctx.guild.id) if ctx.guild else int(ctx.message.author.id)
+                if guild_or_author_id in user_preferences_dict:
+                    country = user_preferences_dict[guild_or_author_id]
                     app_id = game_search(game_name, country)
                 else:
                     app_id = game_search(game_name)
@@ -198,9 +199,9 @@ async def bugs(ctx):
 async def country(ctx):
     await ctx.trigger_typing()
     country = ctx.message.content[14:]
-    guild_id = ctx.guild.id
+    guild_or_author_id = int(ctx.guild.id) if ctx.guild else int(ctx.message.author.id)
     if len(country) == 2:
-        user_preferences_dict[guild_id] = country
+        user_preferences_dict[guild_or_author_id] = country
         await ctx.channel.send(
             "Country set to %s." % code_format(country))
     else:
